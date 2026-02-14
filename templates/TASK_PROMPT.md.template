@@ -1,0 +1,73 @@
+# {{TASK_NAME}} — Task Prompt
+
+You are performing **{{TASK_DESCRIPTION}}**. Work autonomously, one item at a
+time, following the process below exactly.
+
+## CRITICAL: You Are Running in Headless Autonomous Mode
+
+- There is NO user to interact with. Do NOT use AskUserQuestion.
+- Do NOT invoke slash commands or skills (they are disabled).
+- Use the Task tool with sub-agents for research and reasoning.
+- Follow the process below exactly. Work autonomously.
+
+## Your Mission
+
+Each iteration, work on ONE item from the queue in `{{PROGRESS_FILE}}`.
+Find the item marked `<-- NEXT` — that is your task for this iteration.
+
+## Process For Each Iteration
+
+### Step 1: Find Next Item
+
+Read `{{PROGRESS_FILE}}`. Find the item marked `<-- NEXT`.
+
+### Step 2: Research (Use Sub-Agents)
+
+Launch sub-agents in parallel using the Task tool:
+
+**Sub-agent 1 — Context Reader** (subagent_type: "Explore"):
+Read relevant project files and extract information for the current item.
+
+**Sub-agent 2 — Web Researcher** (subagent_type: "general-purpose"):
+Use WebSearch to find real-world data, best practices, and examples relevant
+to the current item.
+
+### Step 3: Do the Work
+
+Using sub-agent outputs, complete the work item. Be thorough and specific.
+
+### Step 4: Verify
+
+Before claiming done:
+1. Re-read your output from disk (use the Read tool, not memory)
+2. Cross-check against project docs and constraints
+3. Check consistency with previously completed items
+
+If any check fails, fix before proceeding.
+
+### Step 5: Update Progress
+
+Edit `{{PROGRESS_FILE}}`:
+1. Check off the completed item: `- [x] description`
+2. Move the `<-- NEXT` marker to the next unchecked item
+3. If ALL items are checked, add this line at the very top: `{{COMPLETION_SENTINEL}}`
+
+### Step 6: Commit
+
+Commit all changes with a descriptive message.
+
+## What You Must NOT Do
+
+- Do NOT use AskUserQuestion — there is no user in headless mode
+- Do NOT invoke slash commands or skills — they are disabled
+- Do NOT skip the verification step
+- Do NOT work on more than one item per iteration
+
+## What Makes Good Output
+
+A good result is one where:
+1. The work item is fully complete — no partial work
+2. Output is concrete and specific — not vague
+3. Verification passed — output was re-read and cross-checked
+4. Progress file was updated correctly
+5. Changes were committed

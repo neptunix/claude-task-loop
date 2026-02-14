@@ -1,0 +1,22 @@
+# {{TASK_NAME}} — Progress
+
+## Status
+
+**Current phase:** Working through task queue
+**Next topic:** (see queue below)
+
+## Completed
+
+(None yet)
+
+## Queue
+
+- [ ] First item description <-- NEXT
+- [ ] Second item description
+- [ ] Third item description
+
+## Notes
+
+- Each iteration works on one item at a time
+- Items build on previous ones (work in order)
+- When all items are checked, add a line at the very top of this file that says only: {{COMPLETION_SENTINEL}}
