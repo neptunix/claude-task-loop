@@ -14,13 +14,11 @@ Reusable headless autonomous loop for Claude Code. Run any repeatable task — s
 ## Install
 
 ```bash
-claude plugin install github:neptunix/claude-task-loop
-```
+# Add the marketplace (one-time)
+claude plugin marketplace add neptunix/claude-task-loop
 
-Or clone manually:
-
-```bash
-git clone git@github.com:neptunix/claude-task-loop.git ~/.claude/plugins/claude-task-loop
+# Install the plugin
+claude plugin install claude-task-loop
 ```
 
 ## Quick Start
