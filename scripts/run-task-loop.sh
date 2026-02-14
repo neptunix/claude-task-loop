@@ -198,7 +198,7 @@ $(cat "$BLOCKERS_FILE" 2>/dev/null || echo 'No blockers.')
     fi
 
     # Check for rate limit / usage exhaustion — sleep until reset, then retry
-    if grep -q "out of extra usage\|rate limit\|quota exceeded\|billing" "$LOG_FILE" 2>/dev/null; then
+    if tail -5 "$LOG_FILE" 2>/dev/null | grep -q "out of extra usage\|rate limit\|quota exceeded\|billing"; then
         echo ""
         echo "API usage limit hit."
 
