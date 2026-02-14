@@ -36,13 +36,7 @@ claude plugin install claude-task-loop
    - `TASK_PROMPT.md` — write the instructions Claude follows each iteration
    - `TASK_PROGRESS.md` — list the work items as a checkbox queue
 
-3. **Run the loop** in a separate terminal:
-
-   ```bash
-   ~/.claude/plugins/claude-task-loop/scripts/run-task-loop.sh
-   ```
-
-   Or use `/task-loop:run` inside Claude Code to see the exact command.
+3. **Run the loop** — use `/task-loop:run` inside Claude Code to get the exact command, then run it in a separate terminal.
 
 ## How It Works
 
