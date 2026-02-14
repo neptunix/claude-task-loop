@@ -1,0 +1,17 @@
+{
+  "name": "claude-task-loop-marketplace",
+  "description": "Marketplace for claude-task-loop plugin",
+  "owner": {
+    "name": "neptunix"
+  },
+  "plugins": [
+    {
+      "name": "claude-task-loop",
+      "description": "Headless autonomous task loop framework for Claude Code",
+      "version": "0.1.0",
+      "source": {
+        "git": "https://github.com/neptunix/claude-task-loop.git"
+      }
+    }
+  ]
+}
