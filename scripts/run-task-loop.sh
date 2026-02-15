@@ -197,8 +197,25 @@ $(cat "$BLOCKERS_FILE" 2>/dev/null || echo 'No blockers.')
         echo "WARNING: Claude exited with code $CLAUDE_EXIT"
     fi
 
-    # Check for rate limit / usage exhaustion — sleep until reset, then retry
-    if tail -5 "$LOG_FILE" 2>/dev/null | grep -q "out of extra usage\|rate limit\|quota exceeded\|billing"; then
+    # Check for rate limit / usage exhaustion — sleep until reset, then retry.
+    # NOTE: We must NOT grep the full log — stream-json output contains conversation
+    # content that often mentions "rate limit" in project docs, causing false positives.
+    RATE_LIMITED=false
+    LAST_LINE=$(tail -1 "$LOG_FILE" 2>/dev/null)
+
+    if [ "$CLAUDE_EXIT" -eq 0 ] && echo "$LAST_LINE" | grep -q '"subtype":\s*"success"'; then
+        # Successful run — no rate limit, skip detection
+        :
+    elif echo "$LAST_LINE" | grep -q "out of extra usage\|quota exceeded\|usage limit"; then
+        RATE_LIMITED=true
+    elif [ "$CLAUDE_EXIT" -ne 0 ] && [ "$CLAUDE_EXIT" -ne 124 ]; then
+        # Non-zero, non-timeout exit — check last few lines for rate limit stderr
+        if tail -3 "$LOG_FILE" 2>/dev/null | grep -q "out of extra usage\|quota exceeded\|usage limit"; then
+            RATE_LIMITED=true
+        fi
+    fi
+
+    if [ "$RATE_LIMITED" = "true" ]; then
         echo ""
         echo "API usage limit hit."
 

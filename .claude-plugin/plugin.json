@@ -1,6 +1,6 @@
 {
   "name": "task-loop",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Reusable headless autonomous loop for Claude Code. Runs any repeatable task (spec gen, test writing, doc generation, code gen) in a battle-tested bash while-loop with rate limit handling, timeouts, git safety, and sentinel-based completion.",
   "author": {
     "name": "neptunix"
