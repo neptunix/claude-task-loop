@@ -1,7 +1,7 @@
 {
   "name": "task-loop",
-  "version": "0.1.2",
-  "description": "Reusable headless autonomous loop for Claude Code. Runs any repeatable task (spec gen, test writing, doc generation, code gen) in a battle-tested bash while-loop with rate limit handling, timeouts, git safety, and sentinel-based completion.",
+  "version": "0.2.0",
+  "description": "Reusable headless autonomous loop for Claude Code. Runs any repeatable task (spec gen, test writing, doc generation, code gen) in a battle-tested bash while-loop with rate limit handling, timeouts, git safety, sentinel-based completion, iteration metrics, inter-iteration state, and post-iteration hooks.",
   "author": {
     "name": "neptunix"
   }

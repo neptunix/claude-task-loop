@@ -130,6 +130,30 @@ Please provide testnet API key and secret.
 
 The `STOP` must be on its own line. The bash loop detects this and exits, printing the blockers file content.
 
+### Auto-Resume with RESUME_AFTER
+
+When Claude needs to pause (e.g., waiting for PR reviews), it can write a timed blocker instead of halting permanently:
+
+```markdown
+STOP
+
+## Waiting for PR review
+
+PR #11 created. Waiting for CI and review feedback.
+
+RESUME_AFTER=300
+```
+
+The loop will:
+1. Detect `STOP` as usual
+2. Find `RESUME_AFTER=300` (seconds)
+3. Sleep 300 seconds (5 minutes)
+4. Continue to the next iteration
+
+Claude decides whether to clear the blocker on the next iteration. If the PR still isn't reviewed, it can write `STOP` + `RESUME_AFTER` again.
+
+**Important:** `RESUME_AFTER=<seconds>` must be on its own line, with an integer value. If the line is missing, the loop halts as before (backward compatible).
+
 ### Custom Sentinels
 
 Configure different sentinels in `.task-loop.env`:

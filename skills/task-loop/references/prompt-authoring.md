@@ -180,3 +180,99 @@ Adapt the type/scope convention to the project.
 **No sub-agents:** Long-context prompts where Claude reads 20 files itself lose focus. Sub-agents keep the main context clean.
 
 **Ambiguous progress updates:** "Update the progress file" is not enough. Specify: check off the item, move the NEXT marker, add to completed list, check for ALL_TASKS_COMPLETE.
+
+## Using the State File
+
+The state file (`.task-loop-state.json` by default) lets Claude pass context between iterations. The loop injects its contents into the prompt automatically.
+
+### When to Use State
+
+- **PR workflows:** Track PR number, fix cycle count, current branch
+- **Multi-phase work:** Track which phase/branch is active
+- **Retry logic:** Count attempts at a flaky operation
+- **Resume context:** Remember where you left off after a RESUME_AFTER pause
+
+### State File Patterns
+
+**Minimal state (branch tracking):**
+```json
+{"branch": "phase1/safety", "task": "implement-kill-switch"}
+```
+
+**PR review cycle:**
+```json
+{"pr_number": 11, "fix_cycle": 2, "branch": "phase1/safety", "last_action": "pushed-fixes"}
+```
+
+**Multi-phase workflow:**
+```json
+{"phase": "p1-indicators", "branch": "phase1/p1-indicators", "pr_number": null, "status": "in_progress"}
+```
+
+### Instructions for the Prompt
+
+Tell Claude explicitly how to use the state file:
+
+```markdown
+## State Management
+
+Read the state file at the start of each iteration. Update it whenever you:
+- Create or switch branches
+- Open a PR
+- Push fix commits
+- Complete a phase
+
+Write the state file with: `echo '{"key": "value"}' > .task-loop-state.json`
+Clear it when starting fresh: `rm -f .task-loop-state.json`
+```
+
+## Using Post-Iteration Hooks
+
+The `POST_HOOK` config runs a bash command after each Claude iteration. Use it as a safety net.
+
+### Common Hook Patterns
+
+**Build validation:**
+```bash
+POST_HOOK="npm run validate 2>&1 | tail -20"
+POST_HOOK_FAIL_ACTION="retry"
+```
+
+**Type checking only:**
+```bash
+POST_HOOK="npx tsc --noEmit 2>&1 | tail -10"
+POST_HOOK_FAIL_ACTION="warn"
+```
+
+**Test suite:**
+```bash
+POST_HOOK="npm test 2>&1 | tail -30"
+POST_HOOK_FAIL_ACTION="stop"
+```
+
+### Fail Actions
+
+- `warn` (default): Log the failure and continue. Good for non-critical checks.
+- `retry`: Decrement iteration counter and retry. Good for build validation — gives Claude another chance to fix.
+- `stop`: Halt the loop immediately. Good for critical invariants that must never break.
+
+## Using Pre-Iteration Context
+
+The `PRE_CONTEXT` config runs a bash command and injects its stdout into the prompt. This saves Claude from running boilerplate commands at the start of every iteration.
+
+### Common Context Patterns
+
+**Git status:**
+```bash
+PRE_CONTEXT="echo 'Branch: '$(git branch --show-current); git log --oneline -5"
+```
+
+**Git + GitHub:**
+```bash
+PRE_CONTEXT="echo 'Branch: '$(git branch --show-current); git log --oneline -5; gh pr list --limit 5 2>/dev/null || true"
+```
+
+**Project health:**
+```bash
+PRE_CONTEXT="echo 'Branch: '$(git branch --show-current); git status --short; npm test -- --reporter=dot 2>&1 | tail -3"
+```
