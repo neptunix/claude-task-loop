@@ -8,7 +8,7 @@
     {
       "name": "claude-task-loop",
       "description": "Headless autonomous task loop framework for Claude Code",
-      "version": "0.1.0",
+      "version": "0.1.2",
       "source": {
         "source": "url",
         "url": "https://github.com/neptunix/claude-task-loop.git"
